@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>TradingBot.libCommon</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <LangVersion>9.0</LangVersion>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Indicators\" />
+    <None Remove="Skender.Stock.Indicators" />
+    <None Remove="OoplesFinance.StockIndicators" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Indicators\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Skender.Stock.Indicators" Version="2.4.10" />
+  </ItemGroup>
+</Project>

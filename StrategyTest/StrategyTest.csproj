@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+    <RootNamespace>TradingBot.StrategyTest</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.3" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
+    <PackageReference Include="coverlet.collector" Version="3.0.2" />
+    <PackageReference Include="CsvHelper" Version="30.0.1" />
+    <PackageReference Include="Serilog" Version="2.12.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
+    <PackageReference Include="Skender.Stock.Indicators" Version="2.4.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\libAPIManager\libAPIManager.csproj" />
+    <ProjectReference Include="..\libCommon\libCommon.csproj" />
+    <ProjectReference Include="..\libStrategies\libStrategies.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="CsvHelper" />
+    <None Remove="Serilog" />
+    <None Remove="Serilog.Sinks.Console" />
+    <None Remove="Serilog.Sinks.RollingFile" />
+    <None Remove="Skender.Stock.Indicators" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Configuration.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>
