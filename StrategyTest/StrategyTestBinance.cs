@@ -23,12 +23,12 @@ namespace StrategyTest
         Dictionary<string, IEnumerable<Candle>> historics = new();
         private static readonly ILogger _logger = Log.ForContext<StrategyTestBinance>();
 
-        readonly DateTime dateFrom = new( 2022, 9, 1 );
-        readonly decimal InitialCash = 30;
+        readonly DateTime dateFrom = new( 2022, 10, 1 );
+        readonly decimal InitialCash = 500;
 		readonly string ConfigurationFile = "Configuration.json";
         Configuration config = null;
         bool csvWrited = false;
-        List<string> Simbolos = new() { "BTCUSDT", "BNBUSDT", "ETHUSDT", "SANDUSDT" };
+        List<string> Simbolos = new() { "BTCUSDT" };    //, "BNBUSDT", "ETHUSDT", "SANDUSDT" };
 
         List<TimeIntervalE> Intervals = new() { TimeIntervalE.FIVEM, TimeIntervalE.FIVETEENM, TimeIntervalE.ONEH, TimeIntervalE.FOURH, TimeIntervalE.ONED };
 
@@ -425,6 +425,52 @@ namespace StrategyTest
                 }
             }
         }
+
+        #endregion
+
+        #region Optimistic
+
+        [TestMethod]
+        public async Task Optimistic()
+        {
+            IClientManager clientManager = new BinanceAPIClient( config.BinanceClientConf.APIKey, config.BinanceClientConf.APIPass );
+
+            foreach( TimeIntervalE interval in Intervals )
+            {
+                foreach( var symbol in Simbolos )
+                {
+                    IEnumerable<Candle> historic = null;
+                    if( historics.ContainsKey( $"{symbol}_{interval}" ) )
+                        historic = historics[ $"{symbol}_{interval}" ];
+                    else
+                    {
+                        historic = await clientManager.GetHistoricAsync( interval, dateFrom, DateTime.Today, symbol );
+                        historics[ $"{symbol}_{interval}" ] = historic;
+                    }
+
+                    List<decimal> percents = new() {0.01m, 0.015m, 0.020m, 0.025m, 0.030m, 0.035m, 0.040m, 0.045m, 0.050m, 0.055m, 0.060m };
+                    for( int i = 0; i < 11; i++ )
+                    {
+                        decimal percentTosell = percents[i];
+                        IStrategy strategy = new Optimistic(percentTosell);
+                        (var inicio, var fin) = RunTest( strategy, historic, $"Optimistic_{interval}_{percentTosell}_{symbol}.csv", symbol );
+                        
+                        if( fin != null && inicio != null )
+                        {
+                            var dias = ( decimal )( fin.date - inicio.date ).TotalDays;
+                            var percent = ( fin.Cash / InitialCash * 100 - 100 ) / dias;
+                            _logger.Information( $"Optimistic_{interval}_{percentTosell}_{symbol} = {percent:0.000} %/dias" );
+                        }
+                        else
+                        {
+                            _logger.Information( $"OOptimistic_{interval}_{percentTosell}_{symbol} = No data" );
+                        }
+                    }
+                
+                }
+            }
+        }
+
 
         #endregion
 
